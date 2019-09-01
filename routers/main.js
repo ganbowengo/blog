@@ -7,7 +7,6 @@
  */
 var express = require('express')
 var router = express.Router()
-var axios = require('axios')
 
 router.get('/', function (req, res, next) {
     // 读取views目录下的指定文件 解析返给客户端
