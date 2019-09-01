@@ -1,26 +1,32 @@
 /**
- * 
+ *
  * author ganbowen
  * description 入口文件
  * created 2019/08/31 11:11:05
- * 
+ *
  */
 
-let express = require('express')
+const path = require('path')
+const express = require('express')
+const config = require('./config/index')
 // 加载模板
-let swig = require('swig')
+const swig = require('swig')
 // 配置模板
-let mongoose = require('mongoose')
-let bodyParser = require('body-parser')
-let cookies = require('cookies')
+const mongoose = require('mongoose')
+// obdyparser中间件 获取post请求数据
+const bodyParser = require('body-parser')
+// 设置cookies
+const Cookies = require('cookies')
 
 // 创建APP应用 => nodeJs http server
-let app = express()
+const app = express()
 
 // 设置静态文件托管
-app.use('/public', express.static(__dirname + '/public'))
+app.use('/public', express.static(path.join(__dirname, '/public')))
 
-// 配置模板
+/**
+ * 配置模板
+ * */
 // 模板文件后缀 解析模板内容的方法
 app.engine('html', swig.renderFile)
 // 设置模板文件的存放目录
@@ -39,32 +45,20 @@ app.use(bodyParser.urlencoded({
 
 // 设置cookies
 app.use(function (req, res, next) {
-    req.cookies = new cookies(req, res)
+    req.cookies = new Cookies(req, res)
     req.userInfo = {}
     if (req.cookies.get('userInfo')) {
-        try {
-            req.userInfo = JSON.parse(req.cookies.get('userInfo'))
-        }
-        cache(e) {}
+        req.userInfo = JSON.parse(req.cookies.get('userInfo'))
     }
     next()
 })
-
 
 // 模块划分
 app.use('/admin', require('./routers/admin'))
 app.use('/api', require('./routers/api'))
 app.use('/', require('./routers/main'))
 
-// // home
-// app.get('/', function (req, res, next) {
-//     // 读取views目录下的指定文件 解析返给客户端
-//     // param 文件名称
-//     // param 传递给模板的数据
-//     res.render('index')
-// })
-
-mongoose.connect('mongodb://localhost:27018/blog', {
+mongoose.connect(config.dbUrl, {
     useNewUrlParser: true
 }, function (err) {
     if (err) {
@@ -72,10 +66,9 @@ mongoose.connect('mongodb://localhost:27018/blog', {
     } else {
         console.log('db success')
         // 监听端口
-        app.listen(8081)
+        app.listen(config.port)
     }
 })
-
 
 // 用户发送 http 请求-> URL->  解析路由 -> 找到匹配的规则 -> 指定绑定的函数 返回内容
 // /public - > 静态 - > 直接读取文件

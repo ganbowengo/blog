@@ -1,7 +1,7 @@
-let express = require('express')
-let router = express.Router()
-let User = require('../models/User')
-let reponseData;
+const express = require('express')
+const router = express.Router()
+const User = require('../models/User')
+let reponseData
 router.use(function (req, res, next) {
     reponseData = {
         code: 0,
@@ -11,9 +11,9 @@ router.use(function (req, res, next) {
 })
 
 router.post('/user/register', function (req, res, next) {
-    let username = req.body.username
-    let password = req.body.password
-    let resPassword = req.body.resPassword
+    const username = req.body.username
+    const password = req.body.password
+    const resPassword = req.body.resPassword
     if (!username) {
         reponseData.code = 1
         reponseData.message = '用户名不能为空'
@@ -55,9 +55,8 @@ router.post('/user/register', function (req, res, next) {
 })
 
 router.post('/user/login', function (req, res, next) {
-    let username = req.body.username
-    let password = req.body.password
-    let resPassword = req.body.resPassword
+    const username = req.body.username
+    const password = req.body.password
     if (!username) {
         reponseData.code = 1
         reponseData.message = '用户名不能为空'
@@ -92,6 +91,5 @@ router.post('/user/login', function (req, res, next) {
         res.json(reponseData)
     })
 })
-
 
 module.exports = router
