@@ -10,7 +10,7 @@ const path = require('path')
 const express = require('express')
 const config = require('./config/index')
 // 加载模板
-const swig = require('swig')
+// const swig = require('swig')
 // 配置模板
 const mongoose = require('mongoose')
 // obdyparser中间件 获取post请求数据
@@ -28,20 +28,21 @@ app.use('/public', express.static(path.join(__dirname, '/public')))
  * 配置模板
  * */
 // 模板文件后缀 解析模板内容的方法
-app.engine('html', swig.renderFile)
+// app.engine('html', swig.renderFile)
 // 设置模板文件的存放目录
-app.set('views', './views')
-// 注册模板引擎 第二个参数必须和engine中的第一个参数一至
-app.set('view engine', 'html')
+// app.set('views', './views')
+// // 注册模板引擎 第二个参数必须和engine中的第一个参数一至
+// app.set('view engine', 'html')
 
-// 开发时 模板引擎设置不缓存
-swig.setDefaults({
-    cache: false
-})
+// // 开发时 模板引擎设置不缓存
+// swig.setDefaults({
+//     cache: false
+// })
 
 app.use(bodyParser.urlencoded({
     extended: true
 }))
+app.use(bodyParser.json())
 
 // 设置cookies
 app.use(function (req, res, next) {
@@ -56,7 +57,6 @@ app.use(function (req, res, next) {
 // 模块划分
 app.use('/admin', require('./routers/admin'))
 app.use('/api', require('./routers/api'))
-app.use('/', require('./routers/main'))
 
 mongoose.connect(config.dbUrl, {
     useNewUrlParser: true
